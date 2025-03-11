@@ -93,6 +93,34 @@ def outputNextMoves(outputDir, verbose = False):
             print("Solution", n)
             printBoard(move)
             print('\n')
+            
+def getNextMoves(turnInfo, verbose = False):
+    board = turnInfo[0]
+    turn = turnInfo[1]
+    
+    if verbose:
+        print("Starting state")
+        printBoard(boardContents=board)
+        print("\n")
+    
+    resultingBoards = []
+    
+    # loop through pieces on the board
+    for loc, piece in board.items():
+        if piece[0] == turn:
+            resultingBoards += PIECE_MOVES[piece[1]](piece, loc, board)
+
+    n = 0
+    for move in resultingBoards:
+        postMoveActions(move, turn)
+        
+        n += 1
+        if verbose:
+            print("Solution", n)
+            printBoard(move)
+            print('\n')
+            
+    return resultingBoards
   
           
 # outputDir = OUTPUT_DIR if len(sys.argv) < 2 else sys.argv[1]
@@ -102,4 +130,4 @@ def outputNextMoves(outputDir, verbose = False):
 
 # outputNextMoves(outputDir, True)
 
-outputNextMoves("", False)
+# outputNextMoves("", False)
