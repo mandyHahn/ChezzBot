@@ -56,6 +56,15 @@ def outputBoard(board, file, turn, i1, i2, i3):
             
         f.write("}\n")
         f.write("0 0 0\n")
+
+def outputBoard_print(board, turn, i1, i2, i3):
+    nextTurn = "w" if turn == "b" else "b"
+    print(f"{nextTurn} {i1} {i2} {i3}")
+    print("{")
+    for k, v in board.items():
+        print(f"  {POS_TO_COORD[k]}: '{v}',")
+        
+    print("}")
     
 def readBoard():
     turn, i1, i2, i3 = sys.stdin.readline().split()
@@ -104,12 +113,18 @@ def getNextMoves(turnInfo, verbose = False):
         print("\n")
     
     resultingBoards = []
+    kingAlive = False
     
     # loop through pieces on the board
     for loc, piece in board.items():
         if piece[0] == turn:
             resultingBoards += PIECE_MOVES[piece[1]](piece, loc, board)
+            
+            if piece[1] == "K": kingAlive = True
 
+    if not kingAlive:
+        return []
+    
     n = 0
     for move in resultingBoards:
         postMoveActions(move, turn)
