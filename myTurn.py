@@ -59,9 +59,9 @@ def minimax(verbose = False):
     bestMove = {}
     path = []
     
-    # bestScore, bestMove, path = max_score(board, turn, SEARCH_DEPTH)
+    bestScore, bestMove, path = max_score(board, turn, SEARCH_DEPTH)
     
-    bestScore, bestMove, path = negamax_wrapper(board, turn)
+    # bestScore, bestMove, path = negamax_wrapper(board, turn)
     # if turn == "w":  
         # global ZVALUES, ZTURN, ZTABLE
         # ZVALUES, ZTURN, ZTABLE = init_zobrist()    
