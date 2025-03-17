@@ -29,9 +29,8 @@ def pieceValueAndSquaresHeuristic( board, turn, verbose = False ):
         
     return value
 
-def heuristic( currentState, turn ):
-    # if turn == "w":
-    return pieceValueAndSquaresHeuristic(currentState, turn)
+def heuristic( currentState, turn, depth = 0 ):
+    return pieceValueAndSquaresHeuristic(currentState, turn) * (depth + 1)/10
     
     # return pieceValueHeuristic(currentState, turn)
 
@@ -226,7 +225,7 @@ def negamax_tt(currentState, turn, depth, alpha=-100000000000, beta=100000000000
 
 def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
     if depth == 0:
-        return heuristic( currentState, turn ), None, []
+        return heuristic( currentState, turn, depth ), None, []
     
     bestScore = -1000000000
     bestMove = {}
@@ -234,7 +233,7 @@ def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
     bestPath = []
     
     if len(successors) == 0:
-        return heuristic( currentState, turn ), None, []
+        return heuristic( currentState, turn, depth ), None, []
     
     # remove_set = set(successors[0].items()) - set(currentState.items()) 
     # add_set = set(currentState.items()) - set(successors[0].items())
@@ -263,7 +262,7 @@ def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
 
 def min_score(currentState, turn, depth, alpha, beta):
     if depth == 0:
-        return heuristic( currentState, turn ), None, []
+        return heuristic( currentState, turn, depth ), None, []
     
     worstScore = 1000000000
     worstMove = {}
@@ -271,7 +270,7 @@ def min_score(currentState, turn, depth, alpha, beta):
     worstPath = []
     
     if len(successors) == 0:
-        return heuristic( currentState, turn ), None, []
+        return heuristic( currentState, turn, depth ), None, []
     
     for nextState in successors:
         score, _, path = max_score(nextState, turn, depth-1, alpha, beta)
