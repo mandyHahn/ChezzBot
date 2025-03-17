@@ -81,19 +81,71 @@ def minimax(verbose = False):
         printBoard(bestMove)
         print("score:", bestScore)
     
-    
-    # pieceValueAndSquaresHeuristic(bestMove, )
-    
-    
-    # if turn == "w":  
-        # print("size:", len(ZTABLE), MAX_TABLE_SIZE)
-        # while len(ZTABLE) > MAX_TABLE_SIZE:
-        #     ZTABLE.pop(next(iter(ZTABLE)))
-            
-        # output_zobrist(ZVALUES, ZTURN, ZTABLE)
-    
     outputBoard_print(bestMove, turn, "0", "0", "0")    
     # outputBoard(bestMove, "turn.txt", turn, "0", "0", "0")
+
+    
+
+def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
+    if depth == 0:
+        return heuristic( currentState, turn, depth ), None, []
+    
+    bestScore = -1000000000
+    bestMove = {}
+    successors = getNextMoves((currentState, turn))
+    bestPath = []
+    
+    if len(successors) == 0:
+        return heuristic( currentState, turn, depth ), None, []
+
+    for nextState in successors:
+        score, _, path = min_score(nextState, turn, depth-1, alpha, beta)
+        
+        if score > bestScore:
+            bestScore = score
+            bestMove = nextState
+            bestPath = path + [bestMove]
+            
+        alpha = max(alpha, bestScore)
+        
+        if bestScore >= beta:
+            break
+        
+    return bestScore, bestMove, bestPath
+
+
+def min_score(currentState, turn, depth, alpha, beta):
+    if depth == 0:
+        return heuristic( currentState, turn, depth ), None, []
+    
+    worstScore = 1000000000
+    worstMove = {}
+    successors = getNextMoves((currentState, TURN_FLIPPER[turn]))
+    worstPath = []
+    
+    if len(successors) == 0:
+        return heuristic( currentState, turn, depth ), None, []
+    
+    for nextState in successors:
+        score, _, path = max_score(nextState, turn, depth-1, alpha, beta)
+        
+        if score < worstScore:
+            worstScore = score
+            worstMove = nextState
+            worstPath = path + [worstMove]
+            
+        beta = min(beta, score)
+        
+        if worstScore <= alpha:
+            break
+        
+    return worstScore, worstMove, worstPath
+
+
+minimax()
+
+
+
 
 
 EXACT = 0
@@ -219,80 +271,6 @@ def negamax_tt(currentState, turn, depth, alpha=-100000000000, beta=100000000000
     # print("^^Score:", bestScore)
     return value, path
 
-
-
-
-
-def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
-    if depth == 0:
-        return heuristic( currentState, turn, depth ), None, []
-    
-    bestScore = -1000000000
-    bestMove = {}
-    successors = getNextMoves((currentState, turn))
-    bestPath = []
-    
-    if len(successors) == 0:
-        return heuristic( currentState, turn, depth ), None, []
-    
-    # remove_set = set(successors[0].items()) - set(currentState.items()) 
-    # add_set = set(currentState.items()) - set(successors[0].items())
-    # print("remove:", remove_set) 
-    # print("add:", add_set) 
-    
-    for nextState in successors:
-        score, _, path = min_score(nextState, turn, depth-1, alpha, beta)
-        
-        if score > bestScore:
-            bestScore = score
-            bestMove = nextState
-            bestPath = path + [bestMove]
-            
-        alpha = max(alpha, bestScore)
-        
-        if beta <= alpha:
-            break
-        
-            
-    # print("--------------RESULT OF MINS--------------")
-    # printBoard(bestMove)
-    # print("^^Score:", bestScore)
-    return bestScore, bestMove, bestPath
-
-
-def min_score(currentState, turn, depth, alpha, beta):
-    if depth == 0:
-        return heuristic( currentState, turn, depth ), None, []
-    
-    worstScore = 1000000000
-    worstMove = {}
-    successors = getNextMoves((currentState, TURN_FLIPPER[turn]))
-    worstPath = []
-    
-    if len(successors) == 0:
-        return heuristic( currentState, turn, depth ), None, []
-    
-    for nextState in successors:
-        score, _, path = max_score(nextState, turn, depth-1, alpha, beta)
-        
-        if score < worstScore:
-            worstScore = score
-            worstMove = nextState
-            worstPath = path + [worstMove]
-            
-        beta = min(beta, score)
-        
-        if beta <= alpha:
-            break
-        
-        
-    # print("--------------RESULT OF MAXES--------------")
-    # printBoard(worstMove)
-    # print("^^Score:", worstScore)
-    return worstScore, worstMove, worstPath
-
-
-minimax()
 
 
 # def max_score(currentState, depth):
