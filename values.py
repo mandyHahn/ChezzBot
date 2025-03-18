@@ -1,6 +1,11 @@
 
+#####################################################################
+#            Piece values and tables based off of:                  #
+#  https://www.chessprogramming.org/Simplified_Evaluation_Function  #
+#  Modifications have been made to adapt to Chezz rather than Chess #
+#####################################################################
 
-PIECE_VALUES = { "P" : 100, "F" : 400, "C" : 400, "N" : 320, "B" : 330, "R" : 500, "Q" : 900, "Z" : 850, "K" : 200000 }
+PIECE_VALUES = { "P" : 100, "F" : 600, "C" : 600, "N" : 320, "B" : 330, "R" : 500, "Q" : 900, "Z" : 850, "K" : 200000 }
 
 BLACK_PEON_TABLE = [
     [ 0,  0,  0,  0,  0,  0,  0,  0,],
