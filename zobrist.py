@@ -1,5 +1,6 @@
 from pathlib import Path
 from chezz import *
+import os
 
 
 PIECE_LOCATIONS = {
