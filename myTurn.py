@@ -1,5 +1,6 @@
 from chezz import *
 from values import *
+from zobrist import *
 
 SEARCH_DEPTH = 3
 TURN_FLIPPER = { "w" : "b", "b" : "w" }
@@ -23,12 +24,12 @@ def heuristic( currentState, turn, depth = 0 ):
 
 def minimax():
     board, turn, i1, i2, i3 = readBoard()
+    i3 = int(i3)
     
-    # printBoard(board)
-    bestScore = -999999999999999
-    bestMove = {}
-    path = []
-    
+    global SEEN_TABLE
+    SEEN_TABLE = loadSeenTable(i3)
+        
+    # printBoard(board)    
     bestScore, bestMove, path = max_score(board, turn, SEARCH_DEPTH)
 
     # print("---------------")
@@ -42,10 +43,13 @@ def minimax():
         
     # printBoard(bestMove)
     # print("score:", bestScore)
+    # outputBoard(bestMove, "turn.txt", turn, "0", "0", i3+1)
     
-    # outputBoard(bestMove, "turn.txt", turn, "0", "0", "0")
+    hash = computeHash(bestMove, turn)
+    SEEN_TABLE[hash] = SEEN_TABLE.get(hash, 0) + 1
+    saveSeenTable(SEEN_TABLE, i3)
+    
     outputBoard_print(bestMove, turn, "0", "0", "0")    
-
 
 def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
     if depth == 0:
@@ -63,6 +67,10 @@ def max_score(currentState, turn, depth, alpha=-1000000000, beta=1000000000):
         score, _, path = min_score(nextState, turn, depth-1, alpha, beta)
         
         if score > bestScore:
+            # if we've seen this state twice before (looping), don't add
+            if depth == SEARCH_DEPTH and SEEN_TABLE.get(computeHash(nextState, turn), 0) >= 2:
+                continue
+            
             bestScore = score
             bestMove = nextState
             bestPath = path + [bestMove]
